@@ -105,7 +105,7 @@ function initPhysicsPlayground() {
         friction: 0.3,
         restitution: 0.6 // Bounciness
     });
-    world.addContactMaterial(globalPhysicsMaterial);
+    world.addContactMaterial(contactMat);
 
     // Track High Impacts
     let lastImpactForce = 0;

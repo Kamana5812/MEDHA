@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#07080A">
+    
+    <title>MEDHA — Where Intelligence Comes Alive</title>
+    <meta name="description" content="MEDHA is an interactive learning experience designed to make knowledge immersive, engaging and future-ready.">
+    
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="MEDHA — Where Intelligence Comes Alive">
+    <meta property="og:description" content="MEDHA is an interactive learning experience designed to make knowledge immersive, engaging and future-ready.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://www.medha-education.com/">
+    <meta property="og:image" content="assets/images/og-image.jpg">
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Scroll Progress -->
+    <div class="scroll-progress-container">
+        <div class="scroll-progress-bar" id="scroll-progress"></div>
+    </div>
+
+    <!-- ================= NAVBAR ================= -->
+    <header>
+        <nav class="navbar">
+            <div class="container navbar-container">
+                <a href="#home" class="logo" aria-label="MEDHA Home">MEDHA</a>
+                
+                <!-- Mobile Menu Button -->
+                <button class="mobile-menu-btn" aria-label="Toggle navigation menu" aria-expanded="false">
+                    <span class="hamburger"></span>
+                </button>
+
+                <!-- Navigation Links -->
+                <div class="nav-links-container">
+                    <ul class="nav-links">
+                        <li><a href="#home">Home</a></li>
+                        <li><a href="#about">About</a></li>
+                        <li><a href="#programs">Programs</a></li>
+                        <li><a href="#playground">Playground</a></li>
+                        <li><a href="#mentors">Mentors</a></li>
+                        <li><a href="#events">Events</a></li>
+                        <li><a href="#contact">Contact</a></li>
+                    </ul>
+                    <a href="#admission" class="btn btn-primary">Start Learning &rarr;</a>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- ================= HERO ================= -->
+        <section class="hero" id="home">
+            <div class="container hero-container">
+                <div class="hero-content">
+                    <div class="badge">✦ THE FUTURE OF LEARNING</div>
+                    <h1 class="hero-title">Unlock the Power<br>of Your <span class="text-gradient">Mind.</span></h1>
+                    <p class="hero-subtitle">MEDHA transforms curiosity into knowledge through interactive, engaging, and future-ready learning experiences.</p>
+                    <div class="hero-cta">
+                        <a href="#admission" class="btn btn-primary">Start Learning &rarr;</a>
+                        <a href="#about" class="btn btn-outline">Explore MEDHA</a>
+                    </div>
+                </div>
+                <div class="hero-3d" id="hero-canvas-container" aria-label="Interactive 3D representation of intelligence and learning">
+                    <canvas id="hero-canvas">
+                        Your browser does not support WebGL. Please upgrade your browser to experience the 3D interactive universe.
+                    </canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ABOUT ================= -->
+        <section class="about" id="about">
+            <div class="container about-container">
+                <div class="about-content">
+                    <h2 class="section-title">Learning Beyond Boundaries.</h2>
+                    <p>MEDHA is an interactive learning experience built around curiosity, exploration and future-ready education.</p>
+                    <p>Step away from the static grids of traditional education and enter a space where curiosity leads and innovation follows.</p>
+                    
+                    <div class="about-features">
+                        <div class="about-feature">
+                            <h4>Interactive</h4>
+                            <p>Learn by exploring.</p>
+                        </div>
+                        <div class="about-feature">
+                            <h4>Intelligent</h4>
+                            <p>Understand concepts deeply.</p>
+                        </div>
+                        <div class="about-feature">
+                            <h4>Future Ready</h4>
+                            <p>Build skills for tomorrow.</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-visual" aria-label="Abstract visual representation of learning philosophy">
+                    <!-- Placeholder for future visual/interactive element -->
+                    <div class="visual-placeholder glass-card">
+                        <span class="placeholder-text">Interactive Concept Visualization</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PROGRAMS ================= -->
+        <section class="programs" id="programs">
+            <div class="container">
+                <h2 class="section-title">Explore Your Potential.</h2>
+                
+                <div class="program-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                    <button class="filter-btn" data-filter="technology">Technology</button>
+                    <button class="filter-btn" data-filter="science">Science</button>
+                    <button class="filter-btn" data-filter="mathematics">Mathematics</button>
+                    <button class="filter-btn" data-filter="creative">Creative</button>
+                </div>
+
+                <div class="programs-grid">
+                    
+                    <article class="program-card glass-card" data-category="technology">
+                        <div class="program-icon" aria-hidden="true">💻</div>
+                        <div class="program-number">01</div>
+                        <h3>Technology</h3>
+                        <p>Dive deep into software architecture and the systems that power our modern world.</p>
+                        <a href="#contact" class="btn btn-outline">Explore Program &rarr;</a>
+                    </article>
+
+                    <article class="program-card glass-card" data-category="science">
+                        <div class="program-icon" aria-hidden="true">🔬</div>
+                        <div class="program-number">02</div>
+                        <h3>Science</h3>
+                        <p>Understand the fundamental laws of nature, from quantum mechanics to astrophysics.</p>
+                        <a href="#contact" class="btn btn-outline">Explore Program &rarr;</a>
+                    </article>
+
+                    <article class="program-card glass-card" data-category="mathematics">
+                        <div class="program-icon" aria-hidden="true">📐</div>
+                        <div class="program-number">03</div>
+                        <h3>Mathematics</h3>
+                        <p>Master the universal language of logic, advanced calculus, and theoretical problem solving.</p>
+                        <a href="#contact" class="btn btn-outline">Explore Program &rarr;</a>
+                    </article>
+
+                    <article class="program-card glass-card" data-category="creative">
+                        <div class="program-icon" aria-hidden="true">🎨</div>
+                        <div class="program-number">04</div>
+                        <h3>Creative Learning</h3>
+                        <p>Bridge the gap between technology and art. Learn design thinking and digital creation.</p>
+                        <a href="#contact" class="btn btn-outline">Explore Program &rarr;</a>
+                    </article>
+
+                    <article class="program-card glass-card" data-category="technology">
+                        <div class="program-icon" aria-hidden="true">🤖</div>
+                        <div class="program-number">05</div>
+                        <h3>Artificial Intelligence</h3>
+                        <p>Explore neural networks, machine learning, and ethical AI development.</p>
+                        <a href="#contact" class="btn btn-outline">Explore Program &rarr;</a>
+                    </article>
+                    
+                    <article class="program-card glass-card" data-category="creative">
+                        <div class="program-icon" aria-hidden="true">🚀</div>
+                        <div class="program-number">06</div>
+                        <h3>Future Skills</h3>
+                        <p>Prepare for tomorrow with cross-disciplinary innovation and strategic thinking.</p>
+                        <a href="#contact" class="btn btn-outline">Explore Program &rarr;</a>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= WHY MEDHA ================= -->
+        <section class="why-us" id="why-us">
+            <div class="container">
+                <h2 class="section-title">Why Learn When You Can Experience?</h2>
+                <div class="features-grid">
+                    
+                    <div class="feature-item">
+                        <div class="feature-icon" aria-hidden="true">🧠</div>
+                        <h3>Learn by Understanding</h3>
+                        <p>We replace rote memorization with deep, conceptual comprehension frameworks.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon" aria-hidden="true">🕹️</div>
+                        <h3>Interactive Learning</h3>
+                        <p>Engage with our 3D physics engines and dynamic tools that make abstract ideas real.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon" aria-hidden="true">🚀</div>
+                        <h3>Future-Ready Skills</h3>
+                        <p>Our curriculum is designed alongside industry leaders to prepare you for tomorrow's challenges.</p>
+                    </div>
+
+                    <div class="feature-item">
+                        <div class="feature-icon" aria-hidden="true">🌌</div>
+                        <h3>Learn Without Limits</h3>
+                        <p>Access a vast universe of interdisciplinary knowledge that encourages unbounded curiosity.</p>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= MENTORS ================= -->
+        <section class="mentors" id="mentors">
+            <div class="container">
+                <h2 class="section-title">Learn From Those Who Inspire.</h2>
+                <div class="mentors-grid">
+
+                    <article class="mentor-card glass-card">
+                        <div class="mentor-image-placeholder">
+                            <span class="visually-hidden">Portrait of Dr. Elena Rostova</span>
+                        </div>
+                        <div class="mentor-info">
+                            <h3>Dr. Elena Rostova</h3>
+                            <span class="specialization text-gradient">Quantum Physics</span>
+                            <p>Former lead researcher at CERN, bringing cutting-edge physics down to earth.</p>
+                            <a href="#" class="social-link" aria-label="LinkedIn profile of Dr. Elena Rostova">LinkedIn</a>
+                        </div>
+                    </article>
+
+                    <article class="mentor-card glass-card">
+                        <div class="mentor-image-placeholder">
+                            <span class="visually-hidden">Portrait of Marcus Chen</span>
+                        </div>
+                        <div class="mentor-info">
+                            <h3>Marcus Chen</h3>
+                            <span class="specialization text-gradient">Artificial Intelligence</span>
+                            <p>AI Architect and author of 'The Sentient Code'. Passionate about ethical machine learning.</p>
+                            <a href="#" class="social-link" aria-label="Twitter profile of Marcus Chen">Twitter</a>
+                        </div>
+                    </article>
+
+                    <article class="mentor-card glass-card">
+                        <div class="mentor-image-placeholder">
+                            <span class="visually-hidden">Portrait of Sarah Jenkins</span>
+                        </div>
+                        <div class="mentor-info">
+                            <h3>Sarah Jenkins</h3>
+                            <span class="specialization text-gradient">Design Thinking</span>
+                            <p>Award-winning product designer helping students bridge logic and human emotion.</p>
+                            <a href="#" class="social-link" aria-label="Portfolio of Sarah Jenkins">Portfolio</a>
+                        </div>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ACHIEVEMENTS ================= -->
+        <section class="achievements" id="achievements">
+            <div class="container achievements-container">
+                
+                <div class="stat-item">
+                    <span class="stat-number" data-target="10000">0</span><span class="stat-suffix">K+</span>
+                    <span class="stat-label">Learners</span>
+                </div>
+                
+                <div class="stat-item">
+                    <span class="stat-number" data-target="50">0</span><span class="stat-suffix">+</span>
+                    <span class="stat-label">Programs</span>
+                </div>
+
+                <div class="stat-item">
+                    <span class="stat-number" data-target="25">0</span><span class="stat-suffix">+</span>
+                    <span class="stat-label">Expert Mentors</span>
+                </div>
+
+                <div class="stat-item">
+                    <span class="stat-number" data-target="95">0</span><span class="stat-suffix">%</span>
+                    <span class="stat-label">Student Success</span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- ================= TESTIMONIALS ================= -->
+        <section class="testimonials" id="testimonials">
+            <div class="container">
+                <h2 class="section-title">Stories of Growth.</h2>
+                <div class="testimonials-slider-container">
+                    
+                    <div class="testimonials-track">
+                        <article class="testimonial-card glass-card">
+                            <p class="testimonial-text">"MEDHA completely changed how I view mathematics. The interactive 3D visualizations made complex calculus suddenly click for me. It's unlike any other platform."</p>
+                            <div class="student-info">
+                                <div class="avatar-placeholder"><span class="visually-hidden">Avatar of James L.</span></div>
+                                <div>
+                                    <h4>James L.</h4>
+                                    <span class="student-course">Advanced Mathematics</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="testimonial-card glass-card">
+                            <p class="testimonial-text">"The AI program is rigorous but incredibly rewarding. Learning from Marcus Chen directly has been the highlight of my educational journey."</p>
+                            <div class="student-info">
+                                <div class="avatar-placeholder"><span class="visually-hidden">Avatar of Priya S.</span></div>
+                                <div>
+                                    <h4>Priya S.</h4>
+                                    <span class="student-course">Artificial Intelligence</span>
+                                </div>
+                            </div>
+                        </article>
+
+                        <article class="testimonial-card glass-card">
+                            <p class="testimonial-text">"I love how visual everything is. The platform feels like you're exploring a video game universe, but you're actually learning physics."</p>
+                            <div class="student-info">
+                                <div class="avatar-placeholder"><span class="visually-hidden">Avatar of Thomas O.</span></div>
+                                <div>
+                                    <h4>Thomas O.</h4>
+                                    <span class="student-course">Quantum Physics</span>
+                                </div>
+                            </div>
+                        </article>
+                    </div>
+
+                    <!-- Slider Controls Placeholder -->
+                    <div class="slider-controls" aria-hidden="true">
+                        <button class="slider-btn prev-btn" aria-label="Previous testimonial">&larr;</button>
+                        <div class="slider-indicators" id="slider-indicators"></div>
+                        <button class="slider-btn next-btn" aria-label="Next testimonial">&rarr;</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= EVENTS ================= -->
+        <section class="events" id="events">
+            <div class="container">
+                <h2 class="section-title">Discover What's Happening.</h2>
+                <div class="events-list">
+                    
+                    <article class="event-card glass-card">
+                        <div class="event-date">
+                            <span class="month">OCT</span>
+                            <span class="day">15</span>
+                        </div>
+                        <div class="event-details">
+                            <span class="event-category text-gradient">Technology</span>
+                            <h3>AI & Technology Workshop</h3>
+                            <p>An immersive deep dive into neural networks and practical machine learning applications.</p>
+                        </div>
+                        <a href="#register" class="btn btn-outline">Register</a>
+                    </article>
+
+                    <article class="event-card glass-card">
+                        <div class="event-date">
+                            <span class="month">OCT</span>
+                            <span class="day">22</span>
+                        </div>
+                        <div class="event-details">
+                            <span class="event-category text-gradient">Science</span>
+                            <h3>Science Discovery Day</h3>
+                            <p>Live interactive experiments and discussions with our top physics and biology mentors.</p>
+                        </div>
+                        <a href="#register" class="btn btn-outline">Register</a>
+                    </article>
+
+                    <article class="event-card glass-card">
+                        <div class="event-date">
+                            <span class="month">NOV</span>
+                            <span class="day">05</span>
+                        </div>
+                        <div class="event-details">
+                            <span class="event-category text-gradient">Mathematics</span>
+                            <h3>Coding Challenge</h3>
+                            <p>Test your logic and algorithmic problem-solving skills in our annual 24-hour hackathon.</p>
+                        </div>
+                        <a href="#register" class="btn btn-outline">Register</a>
+                    </article>
+
+                    <article class="event-card glass-card">
+                        <div class="event-date">
+                            <span class="month">NOV</span>
+                            <span class="day">18</span>
+                        </div>
+                        <div class="event-details">
+                            <span class="event-category text-gradient">Design</span>
+                            <h3>Creative Innovation Workshop</h3>
+                            <p>Explore the intersection of human psychology, art, and digital interface design.</p>
+                        </div>
+                        <a href="#register" class="btn btn-outline">Register</a>
+                    </article>
+
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= INTERACTIVE KNOWLEDGE PLAYGROUND ================= -->
+        <section class="playground" id="playground">
+            <div class="container playground-container">
+                <div class="playground-content">
+                    <h2 class="section-title">Touch. Experiment. Understand.</h2>
+                    <p class="playground-desc">Explore concepts through a living universe where objects obey the laws of physics.</p>
+                    
+                    <div class="playground-hints">
+                        <span class="hint">● GRAVITY</span>
+                        <span class="hint">● COLLISIONS</span>
+                        <span class="hint">● MOMENTUM</span>
+                    </div>
+
+                    <p class="playground-instruction">Drag an object. Throw it. Change gravity. See what happens.</p>
+                    
+                    <div class="playground-status glass-card" id="playground-status">
+                        <span id="status-ready">Universe Ready</span> <span class="divider">|</span> 
+                        <span id="status-gravity">Gravity: Down</span> <span class="divider">|</span> 
+                        <span id="status-objects">Objects: 0</span>
+                    </div>
+                    
+                    <div class="playground-controls glass-card">
+                        <button id="spawn-object" class="btn btn-outline">
+                            <span aria-hidden="true">+</span> Create Object
+                        </button>
+                        <button id="gravity-toggle" class="btn btn-outline">Change Gravity</button>
+                        <button id="randomize-colors" class="btn btn-outline">Randomize Colors</button>
+                        <button id="reset-scene" class="btn btn-outline">Reset Universe</button>
+                    </div>
+                </div>
+
+                <div class="playground-3d" aria-label="Interactive 3D physics playground">
+                    <canvas id="physics-canvas">
+                        Your browser does not support WebGL. Please upgrade your browser to experience the 3D physics playground.
+                    </canvas>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= ADMISSION / ENQUIRY CTA ================= -->
+        <section class="admission" id="admission">
+            <div class="container admission-container glass-card">
+                <h2>Ready to Unlock Your Potential?</h2>
+                <p>Take the first step toward discovering what your mind is capable of.</p>
+                <div class="cta-group">
+                    <a href="#contact" class="btn btn-primary btn-large">Start Your Learning Journey &rarr;</a>
+                    <a href="#contact" class="btn btn-outline btn-large">Talk to MEDHA</a>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= CONTACT ================= -->
+        <section class="contact" id="contact">
+            <div class="container contact-container">
+                <div class="contact-form-wrapper glass-card">
+                    <h2>Get in Touch</h2>
+                    <form id="contact-form" action="#" method="POST" novalidate>
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input type="text" id="name" name="name" required placeholder="John Doe">
+                            <span class="error-msg" id="error-name"></span>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="email" id="email" name="email" required placeholder="john@example.com">
+                            <span class="error-msg" id="error-email"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject">Subject</label>
+                            <input type="text" id="subject" name="subject" required placeholder="Program Enquiry">
+                            <span class="error-msg" id="error-subject"></span>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea id="message" name="message" rows="5" required placeholder="How can we help you?"></textarea>
+                            <span class="error-msg" id="error-message"></span>
+                        </div>
+
+                        <button type="submit" class="btn btn-primary" id="submit-btn">Send Message</button>
+                    </form>
+                </div>
+
+                <div class="contact-info">
+                    <h2>Contact Information</h2>
+                    <p>Have questions? Reach out to our admissions and support team directly.</p>
+                    
+                    <address class="info-list">
+                        <div class="info-item">
+                            <span class="info-icon" aria-hidden="true">📧</span>
+                            <div>
+                                <strong>Email</strong>
+                                <br>
+                                <a href="mailto:hello@medha-education.com">hello@medha-education.com</a>
+                            </div>
+                        </div>
+                        
+                        <div class="info-item">
+                            <span class="info-icon" aria-hidden="true">📞</span>
+                            <div>
+                                <strong>Phone</strong>
+                                <br>
+                                <a href="tel:+18005550199">+1 (800) 555-0199</a>
+                            </div>
+                        </div>
+
+                        <div class="info-item">
+                            <span class="info-icon" aria-hidden="true">📍</span>
+                            <div>
+                                <strong>Location</strong>
+                                <br>
+                                101 Innovation Drive<br>
+                                Tech District, Future City 90210
+                            </div>
+                        </div>
+                    </address>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Back to Top Button -->
+    <button id="back-to-top" class="back-to-top" aria-label="Back to top">&uarr;</button>
+
+    <!-- ================= FOOTER ================= -->
+    <footer class="footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <a href="#home" class="logo">MEDHA</a>
+                <p class="tagline">Where Intelligence Comes Alive.</p>
+            </div>
+            
+            <div class="footer-links">
+                <h4>Navigation</h4>
+                <ul>
+                    <li><a href="#home">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#programs">Programs</a></li>
+                    <li><a href="#mentors">Mentors</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-social">
+                <h4>Connect</h4>
+                <ul>
+                    <li><a href="#" aria-label="MEDHA on Twitter">Twitter</a></li>
+                    <li><a href="#" aria-label="MEDHA on LinkedIn">LinkedIn</a></li>
+                    <li><a href="#" aria-label="MEDHA on Instagram">Instagram</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="container footer-bottom">
+            <p>&copy; 2026 MEDHA. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- GSAP -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+    
+    <!-- Three.js -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    
+    <!-- Cannon-es for Physics -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cannon.js/0.6.2/cannon.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="script.js"></script>
+    <script src="js/hero3d.js"></script>
+    <script src="js/physics.js"></script>
+</body>
+</html>

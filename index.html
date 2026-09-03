@@ -262,7 +262,7 @@
             <div class="container achievements-container">
                 
                 <div class="stat-item">
-                    <span class="stat-number" data-target="10000">0</span><span class="stat-suffix">K+</span>
+                    <span class="stat-number" data-target="10">0</span><span class="stat-suffix">K+</span>
                     <span class="stat-label">Learners</span>
                 </div>
                 
@@ -413,9 +413,17 @@
                     <p class="playground-instruction">Drag an object. Throw it. Change gravity. See what happens.</p>
                     
                     <div class="playground-status glass-card" id="playground-status">
-                        <span id="status-ready">Universe Ready</span> <span class="divider">|</span> 
-                        <span id="status-gravity">Gravity: Down</span> <span class="divider">|</span> 
-                        <span id="status-objects">Objects: 0</span>
+                        <div class="status-metrics">
+                            <span id="status-ready" class="metric-highlight">Universe Ready</span>
+                            <span class="divider">|</span> 
+                            <span id="status-gravity">Gravity: <span class="metric-value">Down</span></span>
+                            <span class="divider">|</span> 
+                            <span id="status-objects">Objects: <span class="metric-value">0</span></span>
+                            <span class="divider">|</span> 
+                            <span id="status-energy" title="System Kinetic Energy">Energy: <span class="metric-value">0.0 J</span></span>
+                            <span class="divider">|</span> 
+                            <span id="status-impact" title="Peak Impact Force">Impact: <span class="metric-value">0 N</span></span>
+                        </div>
                     </div>
                     
                     <div class="playground-controls glass-card">
@@ -432,6 +440,7 @@
                     <canvas id="physics-canvas">
                         Your browser does not support WebGL. Please upgrade your browser to experience the 3D physics playground.
                     </canvas>
+                    <div id="playground-flash" class="playground-flash"></div>
                 </div>
             </div>
         </section>
@@ -555,6 +564,10 @@
             <p>&copy; 2026 MEDHA. All Rights Reserved.</p>
         </div>
     </footer>
+
+    <!-- Custom GSAP Cursor -->
+    <div class="cursor-dot" aria-hidden="true"></div>
+    <div class="cursor-outline" aria-hidden="true"></div>
 
     <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>

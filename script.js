@@ -400,35 +400,9 @@ document.addEventListener("DOMContentLoaded", () => {
         
         if (!controls.spawn) return;
 
-        const updatePlaygroundStatusUI = () => {
-            if (status.ready) status.ready.innerText = "Universe Active";
-            if (status.gravity) status.gravity.innerText = `Gravity: ${State.playground.currentGravity}`;
-            if (status.objects) status.objects.innerText = `Objects: ${State.playground.objectCount}`;
-        };
-
-        controls.spawn.addEventListener("click", () => {
-            State.playground.objectCount++;
-            updatePlaygroundStatusUI();
-        });
-
-        controls.gravity.addEventListener("click", () => {
-            State.playground.currentGravity = State.playground.currentGravity === "Down" ? "Up" : "Down";
-            const btnText = State.playground.currentGravity === "Down" ? "Change Gravity" : "Restore Gravity";
-            controls.gravity.innerText = btnText;
-            updatePlaygroundStatusUI();
-        });
-
-        controls.color.addEventListener("click", () => {
-            State.playground.objectColorMode = "Randomized";
-        });
-
-        controls.reset.addEventListener("click", () => {
-            State.playground.objectCount = 0;
-            State.playground.currentGravity = "Down";
-            State.playground.objectColorMode = "Default";
-            controls.gravity.innerText = "Change Gravity";
-            updatePlaygroundStatusUI();
-        });
+        // The actual physics logic is handled in js/physics.js
+        // We just ensure the DOM elements exist here
+        if (status.ready) status.ready.innerText = "Universe Active";
     }
 
     // ==========================================================================
@@ -489,12 +463,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
                 // Animate transition using GSAP if available, otherwise just toggle display
                 if (typeof gsap !== 'undefined') {
+                    gsap.killTweensOf(programCards);
                     gsap.to(programCards, {
-                        scale: 0.9, opacity: 0, duration: 0.3,
+                        scale: 0.9, opacity: 0, duration: 0.2,
                         onComplete: () => {
+                            let visibleCards = [];
                             programCards.forEach(card => {
                                 if (filterValue === 'all' || card.getAttribute('data-category') === filterValue) {
                                     card.style.display = 'flex';
+                                    visibleCards.push(card);
                                 } else {
                                     card.style.display = 'none';
                                 }
@@ -502,10 +479,13 @@ document.addEventListener("DOMContentLoaded", () => {
                             // Refresh ScrollTrigger to recalculate heights
                             if (typeof ScrollTrigger !== 'undefined') ScrollTrigger.refresh();
                             
-                            gsap.to(programCards, {
-                                scale: 1, opacity: 1, duration: 0.4, stagger: 0.05,
-                                clearProps: "scale,opacity"
-                            });
+                            // Use fromTo to strictly force opacity 0 -> 1 without carrying over stuck states
+                            if (visibleCards.length > 0) {
+                                gsap.fromTo(visibleCards, 
+                                    { scale: 0.9, opacity: 0 },
+                                    { scale: 1, opacity: 1, duration: 0.4, stagger: 0.05, clearProps: "scale,opacity" }
+                                );
+                            }
                         }
                     });
                 } else {
@@ -531,137 +511,169 @@ document.addEventListener("DOMContentLoaded", () => {
         }
 
         gsap.registerPlugin(ScrollTrigger);
-
         // 20. REDUCED MOTION
         const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         if (prefersReducedMotion) return; // Safely exit and keep static layout for a11y
 
-        // Use context for easy cleanup if needed
         let ctx = gsap.context(() => {
             
-            // 1. PAGE LOAD MASTER TIMELINE & 2. NAVBAR ANIMATION
-            const masterTl = gsap.timeline({ defaults: { ease: "power3.out", duration: 1 } });
+            // ==========================================================================
+            // ADVANCED 0: CUSTOM GSAP CURSOR (Awwwards Style)
+            // ==========================================================================
+            const cursorDot = document.querySelector('.cursor-dot');
+            const cursorOutline = document.querySelector('.cursor-outline');
             
-            masterTl.from(DOM.navbar, { y: -30, opacity: 0, duration: 1 })
-                    .from(".hero-content .badge", { y: 20, opacity: 0 }, "-=0.6")
-                    .from(".hero-title", { y: 30, opacity: 0, clipPath: "inset(0 0 100% 0)" }, "-=0.6")
-                    .from(".hero-subtitle", { y: 20, opacity: 0 }, "-=0.8")
-                    .from(".hero-cta .btn", { y: 20, opacity: 0, stagger: 0.1 }, "-=0.8")
-                    .from(".hero-3d", { scale: 0.95, opacity: 0, duration: 1.5, ease: "power2.out" }, "-=1");
+            if (cursorDot && cursorOutline && !window.matchMedia("(pointer: coarse)").matches) {
+                const xToDot = gsap.quickTo(cursorDot, "x", {duration: 0.1, ease: "power3"});
+                const yToDot = gsap.quickTo(cursorDot, "y", {duration: 0.1, ease: "power3"});
+                
+                const xToOutline = gsap.quickTo(cursorOutline, "x", {duration: 0.25, ease: "power3.out"});
+                const yToOutline = gsap.quickTo(cursorOutline, "y", {duration: 0.25, ease: "power3.out"});
 
-            // 5. HERO AMBIENT ANIMATION (Subtle DOM-level)
+                window.addEventListener("mousemove", (e) => {
+                    xToDot(e.clientX);
+                    yToDot(e.clientY);
+                    xToOutline(e.clientX);
+                    yToOutline(e.clientY);
+                });
+
+                // Expand cursor when hovering over interactive elements
+                const interactiveElements = document.querySelectorAll('a, button, .interactive, .stat-item, .program-card');
+                interactiveElements.forEach(el => {
+                    el.addEventListener("mouseenter", () => cursorOutline.classList.add('hover-active'));
+                    el.addEventListener("mouseleave", () => cursorOutline.classList.remove('hover-active'));
+                });
+            }
+
+            // ==========================================================================
+            // ADVANCED 1: MAGNETIC BUTTONS (Awwwards Style)
+            // ==========================================================================
+            const magneticButtons = document.querySelectorAll('.btn');
+            magneticButtons.forEach(btn => {
+                const xTo = gsap.quickTo(btn, "x", {duration: 0.4, ease: "power3"});
+                const yTo = gsap.quickTo(btn, "y", {duration: 0.4, ease: "power3"});
+                
+                btn.addEventListener("mousemove", (e) => {
+                    const rect = btn.getBoundingClientRect();
+                    const x = e.clientX - (rect.left + rect.width / 2);
+                    const y = e.clientY - (rect.top + rect.height / 2);
+                    xTo(x * 0.3); // Magnetic pull strength
+                    yTo(y * 0.3);
+                });
+                
+                btn.addEventListener("mouseleave", () => {
+                    xTo(0);
+                    yTo(0);
+                });
+            });
+
+            // ==========================================================================
+            // ADVANCED 2: PAGE LOAD MASTER SEQUENCE
+            // ==========================================================================
+            const masterTl = gsap.timeline({ defaults: { ease: "expo.out", duration: 1.8 } });
+            
+            masterTl.from(DOM.navbar, { y: -50, opacity: 0, duration: 1.5 })
+                    .from(".hero-content .badge", { y: 30, opacity: 0, scale: 0.9 }, "-=1.2")
+                    // Advanced Skew Clip-Path Reveal
+                    .from(".hero-title", { 
+                        y: 80, 
+                        skewY: 5,
+                        opacity: 0, 
+                        clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)", 
+                        duration: 2 
+                    }, "-=1.4")
+                    .from(".hero-subtitle", { y: 20, opacity: 0 }, "-=1.6")
+                    .from(".hero-cta .btn", { y: 30, opacity: 0, stagger: 0.15, ease: "back.out(1.7)" }, "-=1.6")
+                    .from(".hero-3d", { scale: 0.8, rotationY: -15, rotationX: 10, opacity: 0, duration: 2.5, ease: "power4.out" }, "-=2");
+
+            // Hero Floating Ambient Animation
             gsap.to(".hero-3d canvas", {
-                y: -10,
-                duration: 4,
-                repeat: -1,
-                yoyo: true,
-                ease: "sine.inOut"
+                y: -20, rotationX: 3, rotationY: -3, duration: 6, repeat: -1, yoyo: true, ease: "sine.inOut"
             });
 
-            // 6. ABOUT SECTION
-            gsap.from(".about-content > *", {
-                scrollTrigger: { trigger: ".about", start: "top 75%" },
-                y: 40, opacity: 0, stagger: 0.15, duration: 1, ease: "power2.out"
-            });
-            gsap.from(".about-visual", {
-                scrollTrigger: { trigger: ".about", start: "top 75%" },
-                x: 40, opacity: 0, duration: 1, delay: 0.3, ease: "power2.out"
-            });
-
-            // 7. PROGRAMS SECTION
-            gsap.from("#programs .section-title", {
-                scrollTrigger: { trigger: "#programs", start: "top 80%" },
-                y: 30, opacity: 0, duration: 0.8
-            });
-            gsap.from(".program-card", {
-                scrollTrigger: { trigger: "#programs", start: "top 70%" },
-                y: 40, opacity: 0, stagger: 0.15, duration: 0.8, ease: "power2.out"
+            // ==========================================================================
+            // ADVANCED 3: DEEP SCROLL PARALLAX ON ALL GLASS CARDS
+            // ==========================================================================
+            gsap.utils.toArray(".glass-card").forEach(card => {
+                gsap.to(card, {
+                    scrollTrigger: {
+                        trigger: card,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: 1.5 // Smooth dampening
+                    },
+                    y: -40, // Cards physically lift off the background as you scroll
+                    ease: "none"
+                });
             });
 
-            // 8. WHY MEDHA SECTION
-            gsap.from("#why-us .section-title", {
-                scrollTrigger: { trigger: "#why-us", start: "top 80%" },
-                y: 30, opacity: 0, duration: 0.8
-            });
-            gsap.from(".feature-item", {
-                scrollTrigger: { trigger: "#why-us", start: "top 70%" },
-                y: 30, opacity: 0, stagger: 0.1, duration: 0.8, ease: "power2.out"
+            // ==========================================================================
+            // ADVANCED 4: SECTION REVEALS WITH SKEW & 3D FOLDS
+            // ==========================================================================
+            const sections = [
+                { trigger: ".about", targets: ".about-content > *", anim: { y: 60, opacity: 0, stagger: 0.2 } },
+                { trigger: ".about", targets: ".about-visual", anim: { x: 80, rotationY: -10, opacity: 0, clipPath: "inset(0 100% 0 0)" } },
+                { trigger: "#programs", targets: ".program-card", anim: { y: 80, rotationX: -25, opacity: 0, stagger: 0.1, ease: "back.out(1.2)" } },
+                { trigger: "#why-us", targets: ".feature-item", anim: { y: 50, scale: 0.9, opacity: 0, stagger: 0.1 } },
+                { trigger: "#mentors", targets: ".mentor-card", anim: { y: 80, rotationY: 25, opacity: 0, stagger: 0.15, ease: "power3.out" } },
+                { trigger: "#events", targets: ".event-card", anim: { x: -50, opacity: 0, stagger: 0.1 } },
+                { trigger: "#achievements", targets: ".stat-item", anim: { y: 40, scale: 0.5, opacity: 0, stagger: 0.1, ease: "back.out(2)" } }
+            ];
+
+            sections.forEach(sec => {
+                gsap.from(sec.targets, {
+                    scrollTrigger: { trigger: sec.trigger, start: "top 80%" },
+                    duration: 1.4,
+                    ease: sec.anim.ease || "expo.out",
+                    clearProps: "all",
+                    ...sec.anim
+                });
             });
 
-            // 9. PLAYGROUND SECTION (UI only)
+            // Section Title Deep Reveal
+            gsap.utils.toArray(".section-title").forEach(title => {
+                gsap.from(title, {
+                    scrollTrigger: { trigger: title, start: "top 85%" },
+                    y: 50, opacity: 0, skewY: 3, clipPath: "polygon(0 100%, 100% 100%, 100% 100%, 0% 100%)", duration: 1.5, ease: "expo.out"
+                });
+                
+                // Scrub title upwards slightly
+                gsap.to(title, {
+                    scrollTrigger: { trigger: title, start: "top bottom", end: "bottom top", scrub: 1 },
+                    y: -30
+                });
+            });
+
+            // ==========================================================================
+            // ADVANCED 5: PLAYGROUND CINEMATIC ENTRY
+            // ==========================================================================
             const playgroundTl = gsap.timeline({ scrollTrigger: { trigger: "#playground", start: "top 75%" } });
-            playgroundTl.from(".playground-content > *", { y: 30, opacity: 0, stagger: 0.1, duration: 0.8 })
-                        .from(".playground-3d", { scale: 0.98, opacity: 0, duration: 1 }, "-=0.4");
+            playgroundTl.from(".playground-content > *", { y: 40, opacity: 0, stagger: 0.15, duration: 1.2, ease: "expo.out" })
+                        .from(".playground-3d", { scale: 0.9, rotationX: 10, opacity: 0, clipPath: "circle(0% at 50% 50%)", duration: 2, ease: "power4.inOut" }, "-=0.8");
 
-            // 10. MENTORS SECTION
-            gsap.from("#mentors .section-title", {
-                scrollTrigger: { trigger: "#mentors", start: "top 80%" },
-                y: 30, opacity: 0, duration: 0.8
+            // Admission CTA High Impact Pulse
+            gsap.from(".admission-container", {
+                scrollTrigger: { trigger: "#admission", start: "top 80%" },
+                scale: 0.95, y: 50, opacity: 0, duration: 1.5, ease: "back.out(1.2)", clearProps: "all"
             });
-            gsap.from(".mentor-card", {
-                scrollTrigger: { trigger: "#mentors", start: "top 70%" },
-                y: 40, opacity: 0, stagger: 0.15, duration: 0.8, ease: "power2.out"
-            });
-
-            // 11. ACHIEVEMENTS SECTION (GSAP integration for subtle container reveal)
-            gsap.from(".stat-item", {
-                scrollTrigger: { trigger: "#achievements", start: "top 85%" },
-                y: 20, opacity: 0, stagger: 0.1, duration: 0.6
-            });
-            // Number counter logic is kept strictly inside initAchievementCounters()
-
-            // 12. TESTIMONIAL SECTION
-            gsap.from("#testimonials .section-title", {
-                scrollTrigger: { trigger: "#testimonials", start: "top 80%" },
-                y: 30, opacity: 0, duration: 0.8
-            });
-            gsap.from(".testimonials-slider-container", {
-                scrollTrigger: { trigger: "#testimonials", start: "top 70%" },
-                y: 30, opacity: 0, duration: 0.8, ease: "power2.out"
-            });
-
-            // 13. EVENTS SECTION
-            gsap.from("#events .section-title", {
-                scrollTrigger: { trigger: "#events", start: "top 80%" },
-                y: 30, opacity: 0, duration: 0.8
-            });
-            gsap.from(".event-card", {
-                scrollTrigger: { trigger: "#events", start: "top 70%" },
-                y: 40, opacity: 0, stagger: 0.15, duration: 0.8, ease: "power2.out"
-            });
-
-            // 14. ADMISSION CTA
-            const ctaTl = gsap.timeline({ scrollTrigger: { trigger: "#admission", start: "top 75%" } });
-            ctaTl.from(".admission-container", { scale: 0.95, opacity: 0, duration: 1, ease: "expo.out" })
-                 .from(".admission-container h2", { y: 20, opacity: 0, duration: 0.6 }, "-=0.6")
-                 .from(".admission-container p", { y: 20, opacity: 0, duration: 0.6 }, "-=0.4")
-                 .from(".admission-container .btn", { scale: 0.9, opacity: 0, duration: 0.5, ease: "back.out(1.5)" }, "-=0.4");
-
+            
             // 15. CONTACT SECTION
             gsap.from(".contact-info > *", {
                 scrollTrigger: { trigger: "#contact", start: "top 75%" },
-                x: -30, opacity: 0, stagger: 0.15, duration: 0.8
+                x: -40, opacity: 0, stagger: 0.15, duration: 1.2, ease: "power3.out",
+                clearProps: "all"
             });
             gsap.from(".contact-form-wrapper", {
                 scrollTrigger: { trigger: "#contact", start: "top 75%" },
-                x: 30, opacity: 0, duration: 0.8
+                x: 40, opacity: 0, duration: 1.2, ease: "power3.out",
+                clearProps: "all"
             });
 
             // 16. FOOTER
             gsap.from(".footer-container > div", {
                 scrollTrigger: { trigger: ".footer", start: "top 90%" },
-                y: 20, opacity: 0, stagger: 0.1, duration: 0.8
-            });
-
-            // 18. PARALLAX
-            gsap.to(".visual-placeholder", {
-                scrollTrigger: {
-                    trigger: ".about",
-                    start: "top bottom",
-                    end: "bottom top",
-                    scrub: true
-                },
-                y: -40
+                y: 30, opacity: 0, stagger: 0.15, duration: 1, ease: "power3.out",
+                clearProps: "all"
             });
 
         });

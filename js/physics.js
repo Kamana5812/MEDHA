@@ -21,6 +21,7 @@ const PHYSICS_CONFIG = {
 let physicsScene, physicsCamera, physicsRenderer, world;
 let physicsObjects = [];
 let interactiveMeshes = [];
+let globalPhysicsMaterial = null;
 
 // Interaction State
 let dragBody = null;
@@ -40,7 +41,10 @@ const DOM_PHYSICS = {
     colorBtn: document.getElementById('randomize-colors'),
     resetBtn: document.getElementById('reset-scene'),
     statusGravity: document.getElementById('status-gravity'),
-    statusObjects: document.getElementById('status-objects')
+    statusObjects: document.getElementById('status-objects'),
+    statusEnergy: document.getElementById('status-energy'),
+    statusImpact: document.getElementById('status-impact'),
+    flashOverlay: document.getElementById('playground-flash')
 };
 
 // Gravity States
@@ -63,8 +67,9 @@ function initPhysicsPlayground() {
     physicsScene = new THREE.Scene();
     
     physicsCamera = new THREE.PerspectiveCamera(45, DOM_PHYSICS.canvas.clientWidth / DOM_PHYSICS.canvas.clientHeight, 0.1, 100);
-    physicsCamera.position.set(0, 5, 20);
-    physicsCamera.lookAt(0, 2, 0);
+    // Position camera centrally and far back enough to see the floor and ceiling
+    physicsCamera.position.set(0, 0, 26);
+    physicsCamera.lookAt(0, 0, 0);
 
     physicsRenderer = new THREE.WebGLRenderer({ 
         canvas: DOM_PHYSICS.canvas, 
@@ -95,13 +100,38 @@ function initPhysicsPlayground() {
     
     // Physics Materials
     const defaultMat = new CANNON.Material();
+    globalPhysicsMaterial = defaultMat;
     const contactMat = new CANNON.ContactMaterial(defaultMat, defaultMat, {
         friction: 0.3,
         restitution: 0.6 // Bounciness
     });
-    world.addContactMaterial(contactMat);
+    world.addContactMaterial(globalPhysicsMaterial);
 
-    createBoundaries(defaultMat);
+    // Track High Impacts
+    let lastImpactForce = 0;
+    world.addEventListener("collide", (e) => {
+        // Relative velocity of collision
+        const relativeVelocity = e.contact.getImpactVelocityAlongNormal();
+        // F = ma approx (using momentum change)
+        const massA = e.body.mass || 1;
+        const massB = e.contact.bi.mass || 1;
+        const force = Math.abs(relativeVelocity) * (massA + massB);
+        
+        if (force > 5) {
+            lastImpactForce = force * 10; // Scaling for dramatic visual metric
+            if (DOM_PHYSICS.statusImpact) {
+                DOM_PHYSICS.statusImpact.querySelector('.metric-value').innerText = `${lastImpactForce.toFixed(0)} N`;
+            }
+            // Trigger Flash
+            if (force > 30 && DOM_PHYSICS.flashOverlay) {
+                DOM_PHYSICS.flashOverlay.classList.remove("flash-active");
+                void DOM_PHYSICS.flashOverlay.offsetWidth; // Trigger reflow
+                DOM_PHYSICS.flashOverlay.classList.add("flash-active");
+            }
+        }
+    });
+
+    createBoundaries(globalPhysicsMaterial);
 
     // Initial Objects
     for (let i = 0; i < 8; i++) {
@@ -153,7 +183,7 @@ function createWall(position, rotation, material) {
     const wallBody = new CANNON.Body({ mass: 0, material: material });
     wallBody.addShape(new CANNON.Plane());
     wallBody.position.copy(position);
-    wallBody.quaternion.setFromEuler(rotation.x, rotation.y, rotation.z);
+    wallBody.quaternion.setFromEuler(rotation.x, rotation.y, rotation.z, "XYZ");
     world.addBody(wallBody);
 }
 
@@ -286,7 +316,7 @@ function setupPhysicsInteractions() {
     // UI Button Listeners
     if (DOM_PHYSICS.spawnBtn) {
         DOM_PHYSICS.spawnBtn.addEventListener('click', () => {
-            spawnRandomObject(world.contactmaterials[0].materials[0]);
+            spawnRandomObject(globalPhysicsMaterial);
         });
     }
     
@@ -319,10 +349,11 @@ function setupPhysicsInteractions() {
             while(physicsObjects.length > 0) removeOldestObject();
             gravityState = 0;
             world.gravity.copy(gravityVectors[gravityState]);
+            DOM_PHYSICS.gravityBtn.innerHTML = `Change Gravity`;
             updateUIStatus();
             
             for(let i=0; i<8; i++) {
-                setTimeout(() => spawnRandomObject(world.contactmaterials[0].materials[0]), i * 150);
+                setTimeout(() => spawnRandomObject(globalPhysicsMaterial), i * 150);
             }
         });
     }
@@ -448,7 +479,8 @@ function setupPlaygroundScrollAnimation() {
         end: "bottom top",
         scrub: 1,
         animation: gsap.timeline()
-            .to(physicsCamera.position, { y: 2, z: 12, ease: "none" }, 0)
+            // Gentle cinematic zoom that keeps the entire box in frame
+            .to(physicsCamera.position, { y: 0, z: 20, ease: "none" }, 0)
     });
 }
 
@@ -470,20 +502,34 @@ let lastPhysicsTime = 0;
 function animatePhysicsLoop(time) {
     if (!world || !physicsScene || !physicsCamera) return;
 
-    // Stable timestep (60fps) with max 3 sub-steps to handle FPS drops gracefully
-    const dt = lastPhysicsTime ? (time - lastPhysicsTime) / 1000 : 0;
+    // GSAP ticker 'time' is already in seconds.
+    // Do NOT divide by 1000, otherwise dt becomes ~0.000016 and physics freezes mid-air.
+    const dt = lastPhysicsTime ? (time - lastPhysicsTime) : 0;
     lastPhysicsTime = time;
     
     // Prevent huge jumps if tab was inactive
     const deltaTime = Math.min(dt, 0.1);
 
     world.step(1 / 60, deltaTime, 3);
+    
+    let totalKineticEnergy = 0;
 
-    // Sync Three.js Meshes with Cannon-es Bodies
-    physicsObjects.forEach(obj => {
+    // Sync Three.js meshes with Cannon.js bodies & Calculate Energy
+    for (let i = 0; i < physicsObjects.length; i++) {
+        const obj = physicsObjects[i];
         obj.mesh.position.copy(obj.body.position);
         obj.mesh.quaternion.copy(obj.body.quaternion);
-    });
+        
+        // KE = 1/2 * m * v^2
+        const v = obj.body.velocity;
+        const speedSq = v.x*v.x + v.y*v.y + v.z*v.z;
+        totalKineticEnergy += 0.5 * obj.body.mass * speedSq;
+    }
+    
+    // Update HUD
+    if (DOM_PHYSICS.statusEnergy) {
+        DOM_PHYSICS.statusEnergy.querySelector('.metric-value').innerText = `${totalKineticEnergy.toFixed(1)} J`;
+    }
 
     physicsRenderer.render(physicsScene, physicsCamera);
 }

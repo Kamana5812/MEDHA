@@ -90,6 +90,14 @@ document.addEventListener("DOMContentLoaded", () => {
             if (e.key === "Escape") closeMenu();
         });
 
+        // Close on click outside
+        document.addEventListener("click", (e) => {
+            // If the menu is open, and the click target is NOT inside the navbar, close it
+            if (State.mobileMenuOpen && DOM.navbar && !DOM.navbar.contains(e.target)) {
+                closeMenu();
+            }
+        });
+
         // Handle resize issues where menu might stay hidden
         window.addEventListener("resize", () => {
             if (window.innerWidth > 768) {

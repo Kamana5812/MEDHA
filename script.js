@@ -346,7 +346,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Same-origin in production. Point this at http://localhost:5000
     // if you open index.html from Live Server on a different port.
-    const API_BASE = window.MEDHA_API_BASE || "";
+    const API_BASE = window.MEDHA_API_BASE || "https://medha-zfsh.onrender.com";
     const ENDPOINT = `${API_BASE}/api/contact`;
 
     // Mirrors server/validators/contactValidator.js — keep them in sync.

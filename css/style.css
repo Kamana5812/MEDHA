@@ -1373,3 +1373,43 @@ body {
         display: none;
     }
 }
+
+
+/* Honeypot — hidden from people without display:none, which some bots
+   check for. Kept out of the tab order and off-screen instead. */
+.hp-field {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.field-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+}
+
+.char-count {
+    font-size: 0.8rem;
+    color: var(--color-text-secondary);
+    white-space: nowrap;
+    margin-top: 0.25rem;
+}
+
+.char-count.near-limit { color: #fbbf24; }
+.char-count.at-limit   { color: #ff4d4f; }
+
+.form-status {
+    margin-top: 1rem;
+    font-size: 0.925rem;
+    min-height: 22px;
+    line-height: 1.5;
+}
+
+.form-status.is-success { color: #22c55e; }
+.form-status.is-error   { color: #ff4d4f; }

@@ -1,0 +1,24 @@
+{
+  "name": "medha-contact-api",
+  "version": "1.0.0",
+  "private": true,
+  "description": "MEDHA website + Express/Nodemailer contact API (SMTP delivery to company inbox)",
+  "main": "server/index.js",
+  "type": "commonjs",
+  "scripts": {
+    "dev": "node server/index.js",
+    "start": "node server/index.js",
+    "verify:smtp": "node server/scripts/verify-smtp.js"
+  },
+  "engines": {
+    "node": ">=18.x"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2",
+    "express-rate-limit": "^7.4.0",
+    "helmet": "^7.1.0",
+    "nodemailer": "^6.9.14"
+  }
+}
